@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dynamo DB Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 2rem auto; padding: 1rem; }
+    .question-container { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+    .options { margin-top: 0.5rem; list-style-type: none; padding: 0; }
+    .options li {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .options li.correct {
+      background-color: #d4edda;
+      border-color: #28a745;
+      color: #155724;
+      font-weight: bold;
+    }
+    .options li.incorrect {
+      background-color: #f8d7da;
+      border-color: #dc3545;
+      color: #721c24;
+      font-weight: bold;
+    }
+    .options li.disabled {
+      cursor: default;
+      opacity: 0.7;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: white;
+    }
+    button:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+    .explanation {
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 6px;
+      font-style: italic;
+    }
+    .nav-buttons {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .nav-buttons button {
+      margin: 0 10px;
+      min-width: 120px;
+    }
+    .scoreboard {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-top: 3rem;
+      padding: 2rem;
+      border: 2px solid #007bff;
+      border-radius: 12px;
+      background-color: #e9f5ff;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 15px rgba(0,123,255,0.3);
+    }
+    .icon {
+      font-weight: bold;
+      margin-left: 10px;
+      font-size: 1.2em;
+      vertical-align: middle;
+    }
+    .icon.correct {
+      color: #28a745;
+    }
+    .icon.incorrect {
+      color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="question-page" class="question-container">
+    <!-- Question content will be injected here -->
+  </div>
+
+  <div class="nav-buttons">
+    <button id="prev-btn" disabled>Previous Question</button>
+    <button id="next-btn" disabled>Next Question</button>
+  </div>
+
+  <div id="scoreboard" class="scoreboard" style="display:none;">
+    <!-- Final score display -->
+  </div>
+
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script>
+    $(function() {
+      const questions = [
+	  {
+		"Q_No": "1",
+		"Question": "Before you create a DynamoDB table, you need to provision the EC2 instance the DynamoDB table will be running on.",
+		"A": "True",
+		"B": "False",
+		"C": "",
+		"D": "",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "DynamoDB is serverless with no servers to provision, patch, or manage and no software to install, maintain or operate. It automatically scales tables up and down to adjust for capacity and maintain performance. It provides both provisioned (specify RCU & WCU) and on-demand (pay for what you use) capacity modes."
+	  },
+	  {
+		"Q_No": "2",
+		"Question": "You have provisioned a DynamoDB table with 10 RCUs and 10 WCUs. A month later you want to increase the RCU to handle more read traffic. What should you do?",
+		"A": "Increase RCU and keep WCU the same",
+		"B": "You need to increase both RCU and WCU",
+		"C": "Increase RCU and decrease WCU",
+		"D": "",
+		"E": "",
+		"Answer": "A",
+		"Explanation": "RCU and WCU are decoupled, so you can increase/decrease each value separately."
+	  },
+	  {
+		"Q_No": "3",
+		"Question": "You have an e-commerce website ... last year due to the huge traffic you had the ProvisionedThroughputExceededException exception. What would you do to prevent this error from happening again?",
+		"A": "Increase the RCU to a very high value",
+		"B": "Create a DAX Cluster",
+		"C": "Migrate the database away from DynamoDB for the time of the sale",
+		"D": "",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "DynamoDB Accelerator (DAX) caches the most frequently used data, offloading reads from hot keys and preventing ProvisionedThroughputExceededException."
+	  },
+	  {
+		"Q_No": "4",
+		"Question": "You developed a mobile app using DynamoDB as a datastore. You want to automate sending welcome emails to new users after they sign up. What is the most efficient way to achieve this?",
+		"A": "Schedule a Lambda function to run every minute using CloudWatch Events, scan the entire table looking for new users",
+		"B": "Enable SNS and DynamoDB integration",
+		"C": "Enable DynamoDB Streams and configure it to invoke a Lambda function to send emails",
+		"D": "",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "DynamoDB Streams + Lambda trigger allows real-time automated action in response to item-level modifications."
+	  },
+	  {
+		"Q_No": "5",
+		"Question": "You are running an application in production ... need to make the application run in development mode as well ... most cost-effective solution?",
+		"A": "Use Provisioned Capacity Mode with Auto Scaling enabled for both development and production",
+		"B": "Use Provisioned Capacity Mode with Auto Scaling enabled for production and use On-Demand Capacity Mode for development",
+		"C": "Use Provisioned Capacity Mode with Auto Scaling enabled for development and use On-Demand Capacity Mode for production",
+		"D": "Use On-Demand Capacity Mode for both development and production",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "Use Provisioned Capacity + Auto Scaling for stable prod, and On-Demand Capacity for unpredictable development requests for cost efficiency."
+	  },
+	  {
+		"Q_No": "6",
+		"Question": "The maximum size of an item in a DynamoDB table is ..................",
+		"A": "400 KB",
+		"B": "500 KB",
+		"C": "400 MB",
+		"D": "1 MB",
+		"E": "",
+		"Answer": "A",
+		"Explanation": "The maximum size of an item in a DynamoDB table is 400 KB."
+	  },
+	  {
+		"Q_No": "7",
+		"Question": "DynamoDB tables scale ..........................",
+		"A": "Vertically",
+		"B": "Horizontally",
+		"C": "",
+		"D": "",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "DynamoDB tables scale horizontally by partitioning data across multiple nodes for high scalability."
+	  },
+	  {
+		"Q_No": "8",
+		"Question": "When your DynamoDB table's Primary Key is a combination of Partition Key + Sort Key, then .................... must be unique.",
+		"A": "Partition Key + Sort Key",
+		"B": "Partition Key",
+		"C": "",
+		"D": "",
+		"E": "",
+		"Answer": "A",
+		"Explanation": "In such tables, the combination of Partition Key and Sort Key must be unique."
+	  },
+	  {
+		"Q_No": "9",
+		"Question": "For a blog posts table in DynamoDB, which column should you use as Partition Key for optimal distribution and grouping of posts per blog?",
+		"A": "author_id",
+		"B": "blog_content",
+		"C": "blog_id",
+		"D": "blog_date",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "Using blog_id as the partition key allows optimal distribution and efficient queries for all posts in a blog."
+	  },
+	  {
+		"Q_No": "10",
+		"Question": "An application writes 12 items per second into a DynamoDB table, with each item 8 KB in size. What WCU should you choose?",
+		"A": "12",
+		"B": "24",
+		"C": "48",
+		"D": "96",
+		"E": "",
+		"Answer": "D",
+		"Explanation": "12 * (8 KB / 1 KB) = 96 WCU."
+	  },
+	  {
+		"Q_No": "11",
+		"Question": "An application doing Strongly Consistent reads of 10 items per second, with each item 10 KB in size. What RCU do you choose?",
+		"A": "100",
+		"B": "30",
+		"C": "20",
+		"D": "25",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "10 KB gets rounded to 12 KB. 10 * (12 KB / 4 KB) = 30 RCU."
+	  },
+	  {
+		"Q_No": "12",
+		"Question": "An application doing Eventually Consistent reads of 12 items per second, with each item 16 KB in size. What RCU do you choose?",
+		"A": "192",
+		"B": "48",
+		"C": "24",
+		"D": "12",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "Two Eventually Consistent reads per 4 KB with 1 RCU. 12 * (16 KB / 4 KB) = 48 / 2 = 24 RCU."
+	  },
+	  {
+		"Q_No": "13",
+		"Question": "An app begins to receive ProvisionedThroughputExceededException exceptions from a DynamoDB table but hasn't exceeded the total provisioned RCU. What is a possible cause for this?",
+		"A": "Everything is good, just the CloudWatch metrics are slow to update",
+		"B": "You have a Hot Partition / Hot Key",
+		"C": "There's a bug in the application's code",
+		"D": "",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "RCU/WCU are spread across all table’s partitions; a hot partition or key can cause throttling even if global limits aren’t reached."
+	  },
+	  {
+		"Q_No": "14",
+		"Question": "You are using GetItem API call to retrieve items from a DynamoDB table. Which of the following allows you to select only certain attributes from the item?",
+		"A": "FilterExpression",
+		"B": "ConditionalWrite",
+		"C": "ProjectionExpression",
+		"D": "",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "Use ProjectionExpression to retrieve only specific attributes from an item in DynamoDB."
+	  },
+	  {
+		"Q_No": "15",
+		"Question": "What is the best way to delete all the data in a DynamoDB table?",
+		"A": "DeleteTable and then CreateTable",
+		"B": "Use a Scan and run BatchWriteItem",
+		"C": "Use a Scan and run DeleteItem",
+		"D": "",
+		"E": "",
+		"Answer": "A",
+		"Explanation": "Deleting and recreating the table is the fastest way to remove all data, compared to scanning and deleting each item individually."
+	  },
+	  {
+		"Q_No": "16",
+		"Question": "You want to perform a Scan operation on a DynamoDB table to retrieve all items. What should you do to increase the performance of your scan operation?",
+		"A": "Increase the Limit parameter",
+		"B": "Use Parallel Scans",
+		"C": "Use Sequential Scans",
+		"D": "Increase the RCU",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "Parallel scans allow you to divide and scan the table in segments simultaneously for faster results."
+	  },
+	  {
+		"Q_No": "17",
+		"Question": "You would like to make a Query to a DynamoDB table using an attribute that's NOT part of your table's Primary Key. What should you do to make this query efficient?",
+		"A": "Nothing, Query supports non-key attributes",
+		"B": "Create a Local Secondary Index",
+		"C": "Create a Global Secondary Index",
+		"D": "",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "A Global Secondary Index enables efficient queries on attributes that are not part of the primary key."
+	  },
+	  {
+		"Q_No": "18",
+		"Question": "You are designing a new DynamoDB table and want to make a Query using an attribute that's NOT part of the table's Primary Key, using the >= predicate while keeping the same Partition Key. What should you do?",
+		"A": "Nothing, Use Query as is",
+		"B": "Create a Local Secondary Index",
+		"C": "Create a Global Secondary Index",
+		"D": "",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "Use a Local Secondary Index for efficient queries on non-key attributes with the same partition key and sort predicates."
+	  },
+	  {
+		"Q_No": "19",
+		"Question": "Which Concurrency Model can be implemented using DynamoDB?",
+		"A": "Optimistic Locking",
+		"B": "Pessimistic Locking",
+		"C": "No Locking",
+		"D": "",
+		"E": "",
+		"Answer": "A",
+		"Explanation": "DynamoDB supports Optimistic Locking using features like Conditional Writes and version numbers or timestamps."
+	  },
+	  {
+		"Q_No": "20",
+		"Question": "Which feature of DynamoDB allows you to achieve Optimistic Locking?",
+		"A": "Conditional Reads",
+		"B": "Conditional Writes",
+		"C": "Locked Reads",
+		"D": "Locked Writes",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "Conditional Writes enable Optimistic Locking by verifying that an item hasn't changed before updating it."
+	  },
+	  {
+		"Q_No": "21",
+		"Question": "You are using a DynamoDB table with Provisioned RCUs and WCUs and no throttling issues, but after adding a GSI, table throttles even though CloudWatch says base RCU/WCU are fine. What should you do?",
+		"A": "The LSI is throttling, so provision more RCU and WCU to LSI",
+		"B": "Adding both an LSI and GSI is not recommended",
+		"C": "The GSI is throttling so you need to provision more RCU and WCU to the GSI",
+		"D": "CloudWatch metrics takes time to propagate",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "Global Secondary Indexes (GSI) use their own RCU/WCU; if the GSI is under-provisioned, the main table can also be throttled."
+	  },
+	  {
+		"Q_No": "22",
+		"Question": "Which feature in DynamoDB allows you to automatically delete expired items from the table?",
+		"A": "TTL",
+		"B": "DynamoDB Streams",
+		"C": "DynamoDB Accelerator (DAX)",
+		"D": "Global Secondary Index",
+		"E": "",
+		"Answer": "A",
+		"Explanation": "TTL (Time to Live) allows DynamoDB to automatically delete expired items."
+	  },
+	  {
+		"Q_No": "23",
+		"Question": "Which AWS CLI option allows you to retrieve a subset of attributes from a DynamoDB Scan operation?",
+		"A": "--filter-expression",
+		"B": "--page-size",
+		"C": "--max-items",
+		"D": "--projection-expression",
+		"E": "",
+		"Answer": "D",
+		"Explanation": "--projection-expression lets you select only certain attributes in your scan results."
+	  },
+	  {
+		"Q_No": "24",
+		"Question": "Which AWS CLI options should you use to paginate results of a DynamoDB Scan operation and minimize output items?",
+		"A": "--page-size & --max-items",
+		"B": "--page-size & --starting-token",
+		"C": "--max-items & --starting-token",
+		"D": "--filter-expression",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "--max-items & --starting-token enable pagination and efficient result handling in CLI output."
+	  },
+	  {
+		"Q_No": "25",
+		"Question": "You are developing a banking application that uses DynamoDB to store its data. You want to update both the Exchanges and the AccountBalance tables at the same time or not at all. Which DynamoDB feature allows you to do so?",
+		"A": "DynamoDB Indexes",
+		"B": "DynamoDB Transactions",
+		"C": "DynamoDB Streams",
+		"D": "DynamoDB TTL",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "DynamoDB Transactions support atomic, all-or-nothing updates across multiple tables/items."
+	  },
+	  {
+		"Q_No": "26",
+		"Question": "DynamoDB Streams records can be sent to the following, EXCEPT ............................",
+		"A": "Simple Queue Service (SQS)",
+		"B": "Kinesis Data Streams",
+		"C": "AWS Lambda",
+		"D": "",
+		"E": "",
+		"Answer": "A",
+		"Explanation": "DynamoDB Streams can be sent to Kinesis Data Streams and Lambda, but not SQS."
+	  },
+	  {
+		"Q_No": "27",
+		"Question": "You have configured a DynamoDB table with a TTL attribute to delete expired user's sessions, but you notice expired items still exist in queries. What should you do?",
+		"A": "Do nothing, DynamoDB automatically delete expired items within 48 hours of the expiration",
+		"B": "This is a known bug in DynamoDB. Use a Lambda function to periodically delete the expired items",
+		"C": "Contact AWS Support to periodically delete expired items",
+		"D": "",
+		"E": "",
+		"Answer": "A",
+		"Explanation": "DynamoDB TTL expires items within 48 hours automatically; temporary presence in queries is normal behavior."
+	  }
+	];
+
+      let currentIndex = 0;
+      let wrongCount = 0;
+      let answeredQuestions = new Array(questions.length).fill(false);
+
+      const $questionPage = $('#question-page');
+      const $prevBtn = $('#prev-btn');
+      const $nextBtn = $('#next-btn');
+      const $scoreboard = $('#scoreboard');
+
+      function escapeHtml(text) {
+        return $('<div>').text(text).html();
+      }
+
+      function renderQuestion(index) {
+        let q = questions[index];
+        if (!q) {
+          $questionPage.html('<p>No question found.</p>');
+          return;
+        }
+
+        // Hide scoreboard if showing
+        $scoreboard.hide().html('');
+        $questionPage.show();
+
+        const optionsKeys = ['A', 'B', 'C', 'D', 'E'];
+        let optionsHtml = '<ul class="options">';
+        optionsKeys.forEach(key => {
+          if (q[key] && q[key].trim() !== '') {
+            optionsHtml += `<li data-option="${key}"><strong>${key}.</strong> ${escapeHtml(q[key])} <span class="icon"></span></li>`;
+          }
+        });
+        optionsHtml += '</ul>';
+
+        $questionPage.html(`
+          <h2>Question ${q.Q_No}</h2>
+          <p>${escapeHtml(q.Question)}</p>
+          ${optionsHtml}
+          <div id="explanation" class="explanation" style="display:none;"></div>
+        `);
+
+        const $options = $questionPage.find('.options li');
+        $options.removeClass('correct incorrect disabled')
+                .css('pointer-events', 'auto')
+                .find('.icon').text('').removeClass('correct incorrect');
+
+        // Next button disabled until answer selected
+        $nextBtn.prop('disabled', true);
+
+        // Previous button show/hide and enable/disable
+        if (index === 0) {
+          $prevBtn.hide();
+        } else {
+          $prevBtn.show().prop('disabled', false);
+        }
+
+        // Next button text changes on last question
+        if (index === questions.length - 1) {
+          $nextBtn.text('Show Results');
+        } else {
+          $nextBtn.text('Next Question');
+        }
+
+        if (answeredQuestions[index]) {
+          // Disable options and show answer + explanation, enable next
+          showAnswerHighlight(q);
+          $nextBtn.prop('disabled', false);
+        } else {
+          // Attach click handler for options
+          $options.off('click').on('click', function() {
+            handleAnswerSelection($(this), q);
+          });
+        }
+      }
+
+      function handleAnswerSelection($selectedLi, question) {
+        let selectedOption = $selectedLi.data('option');
+
+        if (answeredQuestions[currentIndex]) return;
+
+        const $options = $questionPage.find('.options li');
+
+        // Disable all options after selection
+        $options.addClass('disabled').css('pointer-events', 'none');
+
+        answeredQuestions[currentIndex] = true;
+
+        const $explanation = $('#explanation');
+        $explanation.show();
+
+        if (selectedOption === question.Answer) {
+          $selectedLi.addClass('correct');
+          $selectedLi.find('.icon').text('✓').addClass('correct');
+          $explanation.html('<strong>Correct!</strong> ' + escapeHtml(question.Explanation));
+        } else {
+          $selectedLi.addClass('incorrect');
+          $selectedLi.find('.icon').text('✗').addClass('incorrect');
+
+          // Highlight correct answer
+          $options.each(function() {
+            if ($(this).data('option') === question.Answer) {
+              $(this).addClass('correct');
+              $(this).find('.icon').text('✓').addClass('correct');
+            }
+          });
+
+          $explanation.html('<strong>Incorrect.</strong> ' + escapeHtml(question.Explanation));
+          wrongCount++;
+        }
+
+        // Enable Next button after answer selection
+        $nextBtn.prop('disabled', false);
+      }
+
+      function showAnswerHighlight(question) {
+        const $options = $questionPage.find('.options li');
+        const $explanation = $('#explanation');
+        $explanation.show();
+        $explanation.html('<strong>Explanation:</strong> ' + escapeHtml(question.Explanation));
+
+        $options.addClass('disabled').css('pointer-events', 'none');
+
+        $options.each(function() {
+          if ($(this).data('option') === question.Answer) {
+            $(this).addClass('correct');
+            $(this).find('.icon').text('✓').addClass('correct');
+          }
+        });
+      }
+
+      $prevBtn.click(function() {
+        if (currentIndex > 0) {
+          currentIndex--;
+          renderQuestion(currentIndex);
+        }
+      });
+
+      $nextBtn.click(function() {
+        if (currentIndex < questions.length - 1) {
+          currentIndex++;
+          renderQuestion(currentIndex);
+        } else {
+          showFinalScore();
+        }
+      });
+
+      function showFinalScore() {
+        $questionPage.hide();
+        $prevBtn.hide();
+        $nextBtn.hide();
+
+        const totalQuestions = questions.length;
+        const correctCount = totalQuestions - wrongCount;
+
+        $scoreboard.html(`
+          <p>Your Score: <strong>${correctCount} / ${totalQuestions}</strong></p>
+          <p>Wrong Answers: <strong>${wrongCount}</strong></p>
+          <button id="restart-btn">Restart Quiz</button>
+        `).show();
+
+        $('#restart-btn').click(function() {
+          currentIndex = 0;
+          wrongCount = 0;
+          answeredQuestions.fill(false);
+          $prevBtn.show().prop('disabled', true);
+          $nextBtn.show().prop('disabled', true);
+          $scoreboard.hide();
+          renderQuestion(currentIndex);
+        });
+      }
+
+      // Initial render
+      renderQuestion(currentIndex);
+    });
+  </script>
+
+</body>
+</html>
