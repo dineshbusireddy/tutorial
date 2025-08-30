@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CI/CD Quiz</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 2rem auto; padding: 1rem; }
+    .question-container { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+    .options { margin-top: 0.5rem; list-style-type: none; padding: 0; }
+    .options li {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+    }
+    .options li.correct {
+      background-color: #d4edda;
+      border-color: #28a745;
+      color: #155724;
+      font-weight: bold;
+    }
+    .options li.incorrect {
+      background-color: #f8d7da;
+      border-color: #dc3545;
+      color: #721c24;
+      font-weight: bold;
+    }
+    .options li.disabled {
+      cursor: default;
+      opacity: 0.7;
+    }
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: white;
+    }
+    button:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+    .explanation {
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 6px;
+      font-style: italic;
+    }
+    .nav-buttons {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .nav-buttons button {
+      margin: 0 10px;
+      min-width: 120px;
+    }
+    .scoreboard {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: bold;
+      margin-top: 3rem;
+      padding: 2rem;
+      border: 2px solid #007bff;
+      border-radius: 12px;
+      background-color: #e9f5ff;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 15px rgba(0,123,255,0.3);
+    }
+    .icon {
+      font-weight: bold;
+      margin-left: 10px;
+      font-size: 1.2em;
+      vertical-align: middle;
+    }
+    .icon.correct {
+      color: #28a745;
+    }
+    .icon.incorrect {
+      color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="question-page" class="question-container">
+    <!-- Question content will be injected here -->
+  </div>
+
+  <div class="nav-buttons">
+    <button id="prev-btn" disabled>Previous Question</button>
+    <button id="next-btn" disabled>Next Question</button>
+  </div>
+
+  <div id="scoreboard" class="scoreboard" style="display:none;">
+    <!-- Final score display -->
+  </div>
+
+  <!-- jQuery CDN -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script>
+    $(function() {
+      const questions = [
+	  {
+		"Q_No": "1",
+		"Question": "What is CICD stands for?",
+		"A": "Continuous Intervention and Continuous Delivery",
+		"B": "Continuous Integration and Continuous Delivery",
+		"C": "Continuous Integration and Continuous Development",
+		"D": "",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "Continuous Integration and Continuous Delivery is the correct expansion for CICD."
+	  },
+	  {
+		"Q_No": "2",
+		"Question": "A company, hosts all their infrastructure in AWS, wants to find an AWS service alternative to GitLab as they want to version control their code entirely in AWS. Which AWS service do you recommend?",
+		"A": "AWS CodeBuild",
+		"B": "Amazon S3",
+		"C": "AWS CodeCommit",
+		"D": "AWS CodePipeline",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "AWS CodeCommit is a secure, managed source control service hosting private Git repositories—an alternative to GitLab and GitHub."
+	  },
+	  {
+		"Q_No": "3",
+		"Question": "You would like to orchestrate your CICD pipeline to deliver all the way to Elastic Beanstalk. Which AWS service do you recommend?",
+		"A": "AWS CodeBuild",
+		"B": "AWS CodePipeline",
+		"C": "AWS CloudFormation",
+		"D": "AWS Simple Workflow Service",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "AWS CodePipeline automates your release pipeline and integrates directly with Elastic Beanstalk for application and infrastructure updates."
+	  },
+	  {
+		"Q_No": "4",
+		"Question": "Which AWS service helps you deploy your code to a fleet of EC2 instances with a specific strategy (e.g., Blue/Green deployment)?",
+		"A": "AWS CodeBuild",
+		"B": "AWS CodePipeline",
+		"C": "AWS CodeDeploy",
+		"D": "AWS CodeCommit",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "AWS CodeDeploy automates deployments to EC2, Fargate, Lambda, and on-premises, supporting blue/green and in-place deployment strategies."
+	  },
+	  {
+		"Q_No": "5",
+		"Question": "You have a Jenkins Continuous Integration (CI) build server hosted on-premises and you would like to stop it and replace it with an AWS managed service. Which AWS should you choose?",
+		"A": "AWS Jenkins",
+		"B": "AWS CodeBuild",
+		"C": "AWS CloudFormation",
+		"D": "Amazon ECS",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "AWS CodeBuild is a fully managed CI service, compiling code and running tests—an alternative to Jenkins."
+	  },
+	  {
+		"Q_No": "6",
+		"Question": "You plan to create a CICD for your application in AWS. You want to run some automated tests before the deployment process. Which AWS service allows you to do so?",
+		"A": "AWS CodeCommit",
+		"B": "AWS CodePipeline",
+		"C": "AWS CodeDeploy",
+		"D": "AWS CodeBuild",
+		"E": "",
+		"Answer": "D",
+		"Explanation": "AWS CodeBuild can compile code, run tests, and produce artifacts ready for deployment."
+	  },
+	  {
+		"Q_No": "7",
+		"Question": "You want to automatically trigger code analysis on every CodeCommit push to detect secret credentials. How can you achieve this?",
+		"A": "Setup AWS CloudWatch Events in CodeCommit",
+		"B": "Setup AWS SNS / Lambda integration in CodeCommit",
+		"C": "Setup SES in CodeCommit",
+		"D": "",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "SNS/Lambda integration in CodeCommit can trigger workflows like code scanning or alerting on each commit."
+	  },
+	  {
+		"Q_No": "8",
+		"Question": "AWS CodeCommit supports the following authentication methods, EXCEPT .........................................",
+		"A": "HTTPS with AWS CLI Credential helper",
+		"B": "SSH Keys",
+		"C": "WebSocket",
+		"D": "HTTPS with Git Credentials for IAM user",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "CodeCommit supports HTTPS, SSH, and Git/IAM (not WebSocket) for authentication."
+	  },
+	  {
+		"Q_No": "9",
+		"Question": "Your colleague has an IAM user in another AWS Account who wants to access your CodeCommit repository. What should you do?",
+		"A": "Share your SSH Keys with him",
+		"B": "Generate Git Credentials and share with him",
+		"C": "Create an IAM role in your AWS account with the required permissions, then tell him to use STS cross-account access to assume this IAM role",
+		"D": "",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "Use cross-account IAM role and STS for secure CodeCommit repository access from another AWS account."
+	  },
+	  {
+		"Q_No": "10",
+		"Question": "CodePipeline failed to deploy to Elastic Beanstalk even though the code was pushed to CodeCommit just 10 mins ago. Most likely reason?",
+		"A": "IAM Permissions are wrong",
+		"B": "CodePipeline is waiting for manual approval",
+		"C": "Your CodeBuild stage probably failed some tests",
+		"D": "Someone has deleted the Elastic Beanstalk environment",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "A failed CodeBuild stage halts pipeline deployment, even if commits succeed."
+	  },
+	  {
+		"Q_No": "11",
+		"Question": "Manager wants emails when CodePipeline fails. How do you achieve this?",
+		"A": "Setup an SNS notification",
+		"B": "Setup an SES email",
+		"C": "Setup an AWS CloudWatch Event Rule",
+		"D": "",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "CloudWatch Event Rules can trigger notifications, including emails, for CodePipeline failures."
+	  },
+	  {
+		"Q_No": "12",
+		"Question": "Which AWS service lets you track and audit API calls to/from CodePipeline?",
+		"A": "AWS CodeBuild",
+		"B": "AWS CloudTrail",
+		"C": "AWS IAM",
+		"D": "AWS Elastic Beanstalk",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "AWS CloudTrail provides audit logs for all CodePipeline API activity."
+	  },
+	  {
+		"Q_No": "13",
+		"Question": "The buildspec.yml file must be placed ....................... so CodeBuild can work properly.",
+		"A": "in the codebuild/ directory in your code",
+		"B": "in the codecommit/ directory in your code",
+		"C": "at the root of your code",
+		"D": "",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "The buildspec.yml file must be at the root of your code for CodeBuild to recognize it."
+	  },
+	  {
+		"Q_No": "14",
+		"Question": "When your CodeBuild build project fails, you can do the following to troubleshoot the issues, EXCEPT .......................",
+		"A": "Review logs in CloudWatch Logs",
+		"B": "Review logs in Amazon S3",
+		"C": "SSH into the CodeBuild container to debug from there",
+		"D": "Run CodeBuild locally to reproduce the build",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "CodeBuild containers cannot be SSH accessed; logs and local reproduction are the available troubleshooting methods."
+	  },
+	  {
+		"Q_No": "15",
+		"Question": "You find 15 minutes of each CodeBuild is spent pulling dependencies. How to speed up the build process?",
+		"A": "Embed dependencies into the code",
+		"B": "Modify the buildspec.yml to enable Dependencies Caching in Amazon S3",
+		"C": "Remove all the dependencies",
+		"D": "",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "Enabling dependency caching in buildspec.yml with S3 dramatically speeds up builds that pull remote dependencies."
+	  },
+	  {
+		"Q_No": "16",
+		"Question": "You want to deploy an SPA to S3 after generating static files from markdown, automatically. Which AWS services should you use?",
+		"A": "CodeCommit + CodePipeline",
+		"B": "CodePipeline + CodeBuild",
+		"C": "CodePipeline + CodeDeploy",
+		"D": "CodeDeploy",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "CodePipeline + CodeBuild lets you build static assets and deploy them to S3 in an automated workflow."
+	  },
+	  {
+		"Q_No": "17",
+		"Question": "You manage a fleet of EC2 and on-premises instances where CodeDeploy isn't working on first deployment. What could be a cause?",
+		"A": "You've probably forgotten to install and start the CodeDeploy agent on the instances",
+		"B": "CodeDeploy doesn't work with on-premises instances",
+		"C": "You've forgotten to allow inbound traffic on the CodeDeploy service's security group",
+		"D": "",
+		"E": "",
+		"Answer": "A",
+		"Explanation": "CodeDeploy agent must be installed and started on all instances to perform deployments."
+	  },
+	  {
+		"Q_No": "18",
+		"Question": "CodeBuild containers are run outside of a VPC and it's impossible to connect to resources in your VPC.",
+		"A": "True",
+		"B": "False",
+		"C": "",
+		"D": "",
+		"E": "",
+		"Answer": "B",
+		"Explanation": "CodeBuild containers can be configured to run inside a VPC for private resource access."
+	  },
+	  {
+		"Q_No": "19",
+		"Question": "CodeDeploy supports the following predefined deployment configurations for EC2/on-premises instances, EXCEPT .....................",
+		"A": "OneAtATime",
+		"B": "HalfAtAtime",
+		"C": "Immutable",
+		"D": "AllAtOnce",
+		"E": "",
+		"Answer": "C",
+		"Explanation": "'Immutable' is not a supported predefined deployment configuration for CodeDeploy EC2/on-premises (supported: OneAtATime, HalfAtAtime, AllAtOnce)."
+	  }
+	];
+
+      let currentIndex = 0;
+      let wrongCount = 0;
+      let answeredQuestions = new Array(questions.length).fill(false);
+
+      const $questionPage = $('#question-page');
+      const $prevBtn = $('#prev-btn');
+      const $nextBtn = $('#next-btn');
+      const $scoreboard = $('#scoreboard');
+
+      function escapeHtml(text) {
+        return $('<div>').text(text).html();
+      }
+
+      function renderQuestion(index) {
+        let q = questions[index];
+        if (!q) {
+          $questionPage.html('<p>No question found.</p>');
+          return;
+        }
+
+        // Hide scoreboard if showing
+        $scoreboard.hide().html('');
+        $questionPage.show();
+
+        const optionsKeys = ['A', 'B', 'C', 'D', 'E'];
+        let optionsHtml = '<ul class="options">';
+        optionsKeys.forEach(key => {
+          if (q[key] && q[key].trim() !== '') {
+            optionsHtml += `<li data-option="${key}"><strong>${key}.</strong> ${escapeHtml(q[key])} <span class="icon"></span></li>`;
+          }
+        });
+        optionsHtml += '</ul>';
+
+        $questionPage.html(`
+          <h2>Question ${q.Q_No}</h2>
+          <p>${escapeHtml(q.Question)}</p>
+          ${optionsHtml}
+          <div id="explanation" class="explanation" style="display:none;"></div>
+        `);
+
+        const $options = $questionPage.find('.options li');
+        $options.removeClass('correct incorrect disabled')
+                .css('pointer-events', 'auto')
+                .find('.icon').text('').removeClass('correct incorrect');
+
+        // Next button disabled until answer selected
+        $nextBtn.prop('disabled', true);
+
+        // Previous button show/hide and enable/disable
+        if (index === 0) {
+          $prevBtn.hide();
+        } else {
+          $prevBtn.show().prop('disabled', false);
+        }
+
+        // Next button text changes on last question
+        if (index === questions.length - 1) {
+          $nextBtn.text('Show Results');
+        } else {
+          $nextBtn.text('Next Question');
+        }
+
+        if (answeredQuestions[index]) {
+          // Disable options and show answer + explanation, enable next
+          showAnswerHighlight(q);
+          $nextBtn.prop('disabled', false);
+        } else {
+          // Attach click handler for options
+          $options.off('click').on('click', function() {
+            handleAnswerSelection($(this), q);
+          });
+        }
+      }
+
+      function handleAnswerSelection($selectedLi, question) {
+        let selectedOption = $selectedLi.data('option');
+
+        if (answeredQuestions[currentIndex]) return;
+
+        const $options = $questionPage.find('.options li');
+
+        // Disable all options after selection
+        $options.addClass('disabled').css('pointer-events', 'none');
+
+        answeredQuestions[currentIndex] = true;
+
+        const $explanation = $('#explanation');
+        $explanation.show();
+
+        if (selectedOption === question.Answer) {
+          $selectedLi.addClass('correct');
+          $selectedLi.find('.icon').text('✓').addClass('correct');
+          $explanation.html('<strong>Correct!</strong> ' + escapeHtml(question.Explanation));
+        } else {
+          $selectedLi.addClass('incorrect');
+          $selectedLi.find('.icon').text('✗').addClass('incorrect');
+
+          // Highlight correct answer
+          $options.each(function() {
+            if ($(this).data('option') === question.Answer) {
+              $(this).addClass('correct');
+              $(this).find('.icon').text('✓').addClass('correct');
+            }
+          });
+
+          $explanation.html('<strong>Incorrect.</strong> ' + escapeHtml(question.Explanation));
+          wrongCount++;
+        }
+
+        // Enable Next button after answer selection
+        $nextBtn.prop('disabled', false);
+      }
+
+      function showAnswerHighlight(question) {
+        const $options = $questionPage.find('.options li');
+        const $explanation = $('#explanation');
+        $explanation.show();
+        $explanation.html('<strong>Explanation:</strong> ' + escapeHtml(question.Explanation));
+
+        $options.addClass('disabled').css('pointer-events', 'none');
+
+        $options.each(function() {
+          if ($(this).data('option') === question.Answer) {
+            $(this).addClass('correct');
+            $(this).find('.icon').text('✓').addClass('correct');
+          }
+        });
+      }
+
+      $prevBtn.click(function() {
+        if (currentIndex > 0) {
+          currentIndex--;
+          renderQuestion(currentIndex);
+        }
+      });
+
+      $nextBtn.click(function() {
+        if (currentIndex < questions.length - 1) {
+          currentIndex++;
+          renderQuestion(currentIndex);
+        } else {
+          showFinalScore();
+        }
+      });
+
+      function showFinalScore() {
+        $questionPage.hide();
+        $prevBtn.hide();
+        $nextBtn.hide();
+
+        const totalQuestions = questions.length;
+        const correctCount = totalQuestions - wrongCount;
+
+        $scoreboard.html(`
+          <p>Your Score: <strong>${correctCount} / ${totalQuestions}</strong></p>
+          <p>Wrong Answers: <strong>${wrongCount}</strong></p>
+          <button id="restart-btn">Restart Quiz</button>
+        `).show();
+
+        $('#restart-btn').click(function() {
+          currentIndex = 0;
+          wrongCount = 0;
+          answeredQuestions.fill(false);
+          $prevBtn.show().prop('disabled', true);
+          $nextBtn.show().prop('disabled', true);
+          $scoreboard.hide();
+          renderQuestion(currentIndex);
+        });
+      }
+
+      // Initial render
+      renderQuestion(currentIndex);
+    });
+  </script>
+
+</body>
+</html>
