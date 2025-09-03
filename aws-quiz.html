@@ -394,10 +394,11 @@
     } else {
       questions = chapters[chapter].map(q => ({ ...q }));
     }
+    shuffle(questions);
+    
     if (questions.length > MAX_QUESTIONS) {
       questions = questions.slice(0, MAX_QUESTIONS);
     }
-    shuffle(questions);
     answeredQuestions = new Array(questions.length).fill(false);
     wrongQuestions = new Array(questions.length).fill(false);
     currentIndex = 0;
@@ -818,3 +819,4 @@
 </script>
 </body>
 </html>
+
