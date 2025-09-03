@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<title>AWS Quiz with Timer & Settings</title>
+<title>AWS Quiz</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 <style>
@@ -16,7 +16,7 @@
     min-height: 100vh;
   }
   .container {
-    width: 100%; max-width: 720px;
+    width: 100%; max-width: 980px;            /* widened so the grid can breathe */
     background: white; border-radius: 16px;
     box-shadow: 0 12px 40px rgba(0,123,255,0.2);
     padding: 3.1rem 2rem 3rem; box-sizing: border-box;
@@ -37,9 +37,9 @@
     cursor: pointer;
     transition: color 0.3s;
   }
-  #top-icons i:hover {
-    color: #0056b3;
-  }
+  #top-icons i:hover { color: #0056b3; }
+
+  /* ---------- HOMEPAGE (decorated, non-breaking) ---------- */
   #chapter-select {
     text-align: center;
     margin-bottom: 3rem;
@@ -55,43 +55,63 @@
     text-shadow: 0 2px 8px rgba(0,123,255,0.18);
   }
   #chapter-instruction {
-    font-size: 1.18rem;
+    font-size: 1.05rem;
     color: #555d82;
+    margin: 0 0 1.2rem;
     font-weight: 600;
-    margin: 0 0 2rem;
-    font-style: italic;
-    user-select: text;
   }
+  /* Search bar wrapper */
+  .search-wrap {
+    display: flex; align-items: center; gap: 10px;
+    max-width: 560px; margin: 0 auto 1.6rem;
+    background: #fff; border: 1.5px solid #e2e8f0;
+    border-radius: 999px; padding: 12px 16px;
+    box-shadow: 0 8px 24px rgba(0, 123, 255, 0.08);
+  }
+  .search-wrap i { color: #7c3aed; font-size: 1rem; }
+  #chapter-search {
+    flex: 1; border: 0; outline: 0; font-size: 1rem; background: transparent;
+  }
+
+  /* Card grid for chapters */
   #chapter-list {
     list-style: none;
-    padding: 0;
-    margin: 0 auto;
-    max-width: 380px;
+    padding: 0; margin: 0 auto;
+    max-width: 900px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+  }
+  /* Each chapter tile remains an <li> so existing JS click handlers still work */
+  #chapter-list li.chapter-card {
+    background: #f0f6ff;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(0,123,255,0.14);
+    padding: 22px 18px;
+    cursor: pointer;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    border: none;                        /* override old left border style */
     text-align: left;
   }
-  #chapter-list li {
-    background: #f0f6ff;
-    border-radius: 13px;
-    box-shadow: 0 6px 20px rgba(0,123,255,0.12);
-    padding: 1.05rem 1.5rem;
-    font-size: 1.18rem;
-    font-weight: 700;
-    color: #0056b3;
-    cursor: pointer;
-    margin-bottom: 1.1rem;
-    transition: background-color 0.3s, color 0.3s, transform 0.2s;
-    user-select: none;
-    border-left: 6px solid transparent;
-    display: block;
+  #chapter-list li.chapter-card:hover {
+    background: #ffffff;
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0,123,255,0.22);
   }
+  .chapter-card__name {
+    font-size: 1.05rem; font-weight: 800; color: #0a56c2; margin-bottom: .35rem;
+  }
+  .chapter-card__count {
+    font-size: .95rem; color: #5f6b7f; font-weight: 600;
+  }
+  /* Hide any legacy hover from old selector if present */
   #chapter-list li:hover,
   #chapter-list li:focus {
-    background: #007bff;
-    color: white;
-    box-shadow: 0 12px 38px rgba(0,123,255,0.16);
-    transform: translateX(10px);
-    border-left-color: #0056b3;
+    border-left-color: transparent;
+    color: inherit;
   }
+
+  /* ---------- The rest of original quiz UI ---------- */
   #progress-bar {
     display: flex;
     align-items: center;
@@ -102,368 +122,106 @@
     color: #555;
   }
   .progress {
-    flex: 1;
-    height: 14px;
-    border-radius: 8px;
+    flex: 1; height: 14px; border-radius: 8px;
     background: linear-gradient(90deg, #e9ecef, #f8f9fa);
     box-shadow: inset 0 1px 4px rgba(0,0,0,0.08);
-    overflow: hidden;
-    position: relative;
+    overflow: hidden; position: relative;
   }
   .progress-inner {
     background: linear-gradient(90deg, #28a745, #4bbf73);
-    height: 100%;
-    transition: width 0.35s;
-    box-shadow: 0 2px 12px rgba(40,167,69,0.12);
+    height: 100%; transition: width 0.35s; box-shadow: 0 2px 12px rgba(40,167,69,0.12);
     border-radius: 8px 0 0 8px;
   }
-  #timer-display {
-    font-weight: 700;
-    font-size: 1.15rem;
-    color: #dc3545;
-    user-select: none;
-    min-width: 110px;
-  }
-  #nav-bar {
-    margin: 1.2rem 0 0.15rem 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-    align-items: center;
-    user-select: none;
-  }
+  #timer-display { font-weight: 700; font-size: 1.15rem; color: #dc3545; user-select: none; min-width: 110px; }
+
+  #nav-bar { margin: 1.2rem 0 0.15rem 0; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; user-select: none; }
   .nav-btn {
-    background: #e9ecef;
-    border: none;
-    border-radius: 50%;
-    width: 38px;
-    height: 38px;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    color: #6c757d;
+    background: #e9ecef; border: none; border-radius: 50%; width: 38px; height: 38px;
+    font-weight: 600; font-size: 1rem; cursor: pointer; color: #6c757d;
     box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-    transition: background-color 0.23s, color 0.23s, box-shadow 0.23s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    transition: background-color 0.23s, color 0.23s, box-shadow 0.23s; display: flex; align-items: center; justify-content: center;
   }
-  .nav-btn:hover:not(.active) {
-    background: #ced4da;
-    color: #495057;
-    box-shadow: 0 0 5px rgba(0,0,0,0.15);
-  }
-  .nav-btn.active {
-    background: #007bff;
-    color: white;
-    box-shadow: 0 0 12px rgba(0,123,255,0.18);
-    font-size: 1.05rem;
-    font-weight: 700;
-  }
-  .nav-btn.answered-correct {
-    background: #28a745;
-    color: white;
-    box-shadow: 0 0 8px rgba(40,167,69,0.11);
-  }
-  .nav-btn.answered-wrong {
-    background: #dc3545;
-    color: white;
-    box-shadow: 0 0 8px rgba(220,53,69,0.12);
-  }
-  .nav-btn.current-wrong {
-    border: 3px solid #a71d2a;
-    box-shadow: 0 0 14px rgba(220,53,69,0.14);
-    font-weight: 700;
-  }
-  #pagination-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 8px;
-    margin-top: 6px;
-    user-select: none;
-    font-weight: 600;
-    color: #444;
-    font-size: 0.97rem;
-  }
+  .nav-btn:hover:not(.active) { background: #ced4da; color: #495057; box-shadow: 0 0 5px rgba(0,0,0,0.15); }
+  .nav-btn.active { background: #007bff; color: white; box-shadow: 0 0 12px rgba(0,123,255,0.18); font-size: 1.05rem; font-weight: 700; }
+  .nav-btn.answered-correct { background: #28a745; color: white; box-shadow: 0 0 8px rgba(40,167,69,0.11); }
+  .nav-btn.answered-wrong { background: #dc3545; color: white; box-shadow: 0 0 8px rgba(220,53,69,0.12); }
+  .nav-btn.current-wrong { border: 3px solid #a71d2a; box-shadow: 0 0 14px rgba(220,53,69,0.14); font-weight: 700; }
+
+  #pagination-controls { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 6px; user-select: none; font-weight: 600; color: #444; font-size: 0.97rem; }
   #pagination-controls button {
-    cursor: pointer;
-    border: 1.5px solid #ccc;
-    background: #f0f0f0;
-    padding: 6px 14px;
-    border-radius: 7px;
-    font-weight: 700;
-    font-size: 1rem;
-    transition: background-color 0.22s, border-color 0.22s;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.066);
+    cursor: pointer; border: 1.5px solid #ccc; background: #f0f0f0; padding: 6px 14px; border-radius: 7px; font-weight: 700; font-size: 1rem;
+    transition: background-color 0.22s, border-color 0.22s; box-shadow: 0 2px 6px rgba(0,0,0,0.066);
   }
-  #pagination-controls button:hover:not(:disabled) {
-    background-color: #e1e7ef;
-    border-color: #009;
-  }
-  #pagination-controls button:disabled {
-    cursor: not-allowed;
-    opacity: 0.58;
-  }
+  #pagination-controls button:hover:not(:disabled) { background-color: #e1e7ef; border-color: #009; }
+  #pagination-controls button:disabled { cursor: not-allowed; opacity: 0.58; }
+
   .question-container {
-    margin-top: 2rem;
-    margin-bottom: 1.5rem;
-    border-radius: 12px;
-    border: 1.5px solid #d8e0ec;
-    background: #f9fbff;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-    padding: 1.8rem 1.6rem;
-    font-size: 1.12rem;
-    line-height: 1.4;
-    color: #222;
-    user-select: none;
+    margin-top: 2rem; margin-bottom: 1.5rem; border-radius: 12px; border: 1.5px solid #d8e0ec;
+    background: #f9fbff; box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    padding: 1.8rem 1.6rem; font-size: 1.12rem; line-height: 1.4; color: #222; user-select: none;
   }
-  .question-container h2 {
-    margin: 0 0 1.4rem 0;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #0056b3;
-  }
-  .options,
+  .question-container h2 { margin: 0 0 1.4rem 0; font-size: 1.5rem; font-weight: 700; color: #0056b3; }
+  .options, .options li { list-style: none; padding: 0; margin: 0; }
   .options li {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+    background: #fff; border: 2px solid #cdd4e0; border-radius: 8px; margin-bottom: 1rem; padding: 0.85rem 1.2rem;
+    font-size: 1.15rem; cursor: pointer; transition: background-color 0.32s, border-color 0.32s; position: relative; user-select: none; box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   }
-  .options li {
-    background: #fff;
-    border: 2px solid #cdd4e0;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    padding: 0.85rem 1.2rem;
-    font-size: 1.15rem;
-    cursor: pointer;
-    transition: background-color 0.32s, border-color 0.32s;
-    position: relative;
-    user-select: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  }
-  .options li:hover:not(.disabled) {
-    background: #eaf4ff;
-    border-color: #7aa7e9;
-    box-shadow: 0 4px 14px rgba(122,167,233,0.14);
-  }
-  .options li.correct {
-    border-color: #28a745;
-    background-color: #d4edda;
-    color: #155724;
-    font-weight: 700;
-    box-shadow: 0 0 16px rgba(40,167,69,0.22);
-  }
-  .options li.incorrect {
-    border-color: #dc3545;
-    background-color: #f8d7da;
-    color: #721c24;
-    font-weight: 700;
-    box-shadow: 0 0 16px rgba(220,53,69,0.22);
-  }
-  .options li.disabled {
-    cursor: not-allowed;
-    opacity: 0.7;
-  }
-  .option-label {
-    width: 40px;
-    font-weight: 800;
-    color: #007bff;
-  }
-  #action-buttons {
-    text-align: center;
-  }
+  .options li:hover:not(.disabled) { background: #eaf4ff; border-color: #7aa7e9; box-shadow: 0 4px 14px rgba(122,167,233,0.14); }
+  .options li.correct { border-color: #28a745; background-color: #d4edda; color: #155724; font-weight: 700; box-shadow: 0 0 16px rgba(40,167,69,0.22); }
+  .options li.incorrect { border-color: #dc3545; background-color: #f8d7da; color: #721c24; font-weight: 700; box-shadow: 0 0 16px rgba(220,53,69,0.22); }
+  .options li.disabled { cursor: not-allowed; opacity: 0.7; }
+  .option-label { width: 40px; font-weight: 800; color: #007bff; }
+
+  #action-buttons { text-align: center; }
   #action-buttons button {
-    background: #007bff;
-    color: white;
-    font-weight: 700;
-    font-size: 1.1rem;
-    padding: 0.6rem 1.6rem;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    margin: 1rem 10px 0 0;
-    box-shadow: 0 5px 14px rgba(0,123,255,0.15);
-    user-select: none;
-    transition: background 0.26s;
+    background: #007bff; color: white; font-weight: 700; font-size: 1.1rem; padding: 0.6rem 1.6rem; border-radius: 8px; border: none;
+    cursor: pointer; margin: 1rem 10px 0 0; box-shadow: 0 5px 14px rgba(0,123,255,0.15); user-select: none; transition: background 0.26s;
   }
-  #action-buttons button:disabled {
-    background: #6c757d;
-    cursor: not-allowed;
-    box-shadow: none;
-  }
-  #action-buttons button:hover:not(:disabled) {
-    background: #0056b3;
-  }
-  .explanation {
-    background: #fff7d6;
-    border: 1.5px solid #f7e498;
-    padding: 1.2rem;
-    margin-top: 1.4rem;
-    border-radius: 10px;
-    font-style: italic;
-    min-height: 70px;
-    color: #836d1f;
-    box-shadow: 0 4px 12px rgba(247,228,152,0.19);
-  }
+  #action-buttons button:disabled { background: #6c757d; cursor: not-allowed; box-shadow: none; }
+  #action-buttons button:hover:not(:disabled) { background: #0056b3; }
+
+  .explanation { background: #fff7d6; border: 1.5px solid #f7e498; padding: 1.2rem; margin-top: 1.4rem; border-radius: 10px; font-style: italic; min-height: 70px; color: #836d1f; box-shadow: 0 4px 12px rgba(247,228,152,0.19); }
+
   .scoreboard {
-    background: #e8f0fe;
-    border-radius: 18px;
-    padding: 2.5rem 1rem 3rem 1rem;
-    box-shadow: 0 6px 32px rgba(0,123,255,0.11);
-    text-align: center;
-    border: 3px solid #007bff;
-    font-weight: 900;
-    color: #00316c;
-    max-width: 420px;
-    margin: 3rem auto 0 auto;
+    background: #e8f0fe; border-radius: 18px; padding: 2.5rem 1rem 3rem 1rem; box-shadow: 0 6px 32px rgba(0,123,255,0.11);
+    text-align: center; border: 3px solid #007bff; font-weight: 900; color: #00316c; max-width: 420px; margin: 3rem auto 0 auto;
   }
-  .result-section {
-    margin-bottom: 1.3rem;
-    font-size: 1.25rem;
-  }
-  .result-success {
-    color: #28a745;
-    font-weight: 900;
-  }
-  .result-fail {
-    color: #dc3545;
-    font-weight: 900;
-  }
-  #result-chart {
-    margin-top: 30px;
-    max-width: 320px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  #result-chart img {
-    max-width: 100%;
-    box-shadow: 0 4px 18px rgba(40,167,69,0.06);
-    border-radius: 16px;
-    display: block;
-  }
+  .result-section { margin-bottom: 1.3rem; font-size: 1.25rem; }
+  .result-success { color: #28a745; font-weight: 900; }
+  .result-fail { color: #dc3545; font-weight: 900; }
+  #result-chart { margin-top: 30px; max-width: 320px; margin-left: auto; margin-right: auto; }
+  #result-chart img { max-width: 100%; box-shadow: 0 4px 18px rgba(40,167,69,0.06); border-radius: 16px; display: block; }
+
   #settings-modal {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; width: 100vw; height: 100vh;
-    background: rgba(0,0,0,0.09);
-    justify-content: center; align-items: center; z-index: 1010;
-    transition: opacity 0.15s;
+    display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.09); justify-content: center; align-items: center; z-index: 1010; transition: opacity 0.15s;
   }
   #settings-content {
-    background: white;
-    border-radius: 13px;
-    padding: 20px 30px;
-    max-width: 320px;
-    width: 90%;
-    box-sizing: border-box;
-    box-shadow: 0 4px 22px rgba(0,123,255,0.11);
+    background: white; border-radius: 13px; padding: 20px 30px; max-width: 320px; width: 90%; box-sizing: border-box; box-shadow: 0 4px 22px rgba(0,123,255,0.11);
   }
-  #settings-content h3 {
-    margin-top: 0;
-    color: #007bff;
-    font-weight: 900;
-    margin-bottom: 20px;
-  }
-  #settings-content label {
-    font-weight: 600;
-    display: block;
-    margin-bottom: 6px;
-  }
-  #settings-content select {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 20px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-    box-sizing: border-box;
-  }
-  #settings-actions {
-    text-align: right;
-  }
-  #settings-actions button {
-    margin-left: 8px;
-    min-width: 75px;
-  }
+  #settings-content h3 { margin-top: 0; color: #007bff; font-weight: 900; margin-bottom: 20px; }
+  #settings-content label { font-weight: 600; display: block; margin-bottom: 6px; }
+  #settings-content select { width: 100%; padding: 8px; margin-bottom: 20px; border-radius: 6px; border: 1px solid #ccc; font-size: 1rem; box-sizing: border-box; }
+  #settings-actions { text-align: right; }
+  #settings-actions button { margin-left: 8px; min-width: 75px; }
+
   /* Timer slider styles */
-  .toggle-slider {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 26px;
-  }
-  .toggle-slider input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 26px;
-  }
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 20px;
-    width: 20px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-  }
-  input:checked + .slider {
-    background-color: #007bff;
-  }
-  input:checked + .slider:before {
-    transform: translateX(24px);
-  }
-  /* Disabled dropdown */
-  select:disabled {
-    background: #eee;
-    color: #888;
-    cursor: not-allowed;
-  }
-  /* New chapter intro card */
-  #chapter-intro {
-    display: none;
-    text-align: center;
-    padding: 2.5rem;
-    user-select: none;
-  }
-  #chapter-intro h2 {
-    font-size: 2rem;
-    font-weight: 900;
-    color: #25284c;
-    letter-spacing: 1.2px;
-    margin-bottom: 1rem;
-  }
-  #chapter-intro div {
-    font-size: 1.2rem;
-    color: #555d82;
-    margin-bottom: 2.1rem;
-  }
+  .toggle-slider { position: relative; display: inline-block; width: 50px; height: 26px; }
+  .toggle-slider input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 26px; }
+  .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+  input:checked + .slider { background-color: #007bff; }
+  input:checked + .slider:before { transform: translateX(24px); }
+  select:disabled { background: #eee; color: #888; cursor: not-allowed; }
+
+  /* Chapter intro card (unchanged) */
+  #chapter-intro { display: none; text-align: center; padding: 2.5rem; user-select: none; }
+  #chapter-intro h2 { font-size: 2rem; font-weight: 900; color: #25284c; letter-spacing: 1.2px; margin-bottom: 1rem; }
+  #chapter-intro div { font-size: 1.2rem; color: #555d82; margin-bottom: 2.1rem; }
   #start-chapter-btn {
-    background: #7b2ff7;
-    color: white;
-    font-weight: 700;
-    font-size: 1.1rem;
-    padding: 0.8rem 2.5rem;
-    border-radius: 7px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(123,47,247,0.12);
+    background: #7b2ff7; color: white; font-weight: 700; font-size: 1.1rem; padding: 0.8rem 2.5rem; border-radius: 7px; border: none; cursor: pointer; box-shadow: 0 4px 16px rgba(123,47,247,0.12);
   }
-  #start-chapter-btn:hover {
-    background: #5901db;
-  }
+  #start-chapter-btn:hover { background: #5901db; }
 </style>
 </head>
 <body>
@@ -483,8 +241,17 @@
   <div id="chapter-select">
     <h2>Amazon Web Services Quiz</h2>
     <div id="chapter-instruction">Configure your quiz settings, then select a chapter below to begin testing your AWS knowledge!</div>
+
+    <!-- NEW: Search bar (pure UI; doesn't affect logic) -->
+    <div class="search-wrap">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input id="chapter-search" type="text" placeholder="Search chapters or scenarios..." />
+    </div>
+
+    <!-- Cards are still <li> so existing click logic works -->
     <ul id="chapter-list"></ul>
   </div>
+
   <div id="progress-bar" style="display:none;">
     <span id="progress-count"></span>
     <div class="progress"><div class="progress-inner"></div></div>
@@ -499,6 +266,8 @@
   </div>
   <div id="scoreboard" class="scoreboard" style="display:none;"></div>
 </div>
+
+<!-- Settings modal (unchanged) -->
 <div id="settings-modal" aria-modal="true" role="dialog">
   <div id="settings-content">
     <h3>Quiz Settings</h3>
@@ -530,7 +299,7 @@
     </label>
     <select id="timer-duration-select" style="display:none; margin-bottom: 1.8rem;">
       <option value="10">10 seconds</option>
-      <option value="15" >15 seconds</option>
+      <option value="15">15 seconds</option>
       <option value="20">20 seconds</option>
       <option value="30">30 seconds</option>
       <option value="45">45 seconds</option>
@@ -544,6 +313,7 @@
     </div>
   </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   let MAX_QUESTIONS = 100;
@@ -566,7 +336,6 @@
       [array[i], array[j]] = [array[j], array[i]];
     }
   }
-
   function getPerformanceCategory(scorePercent) {
     if (scorePercent >= 90) return "Excellent";
     if (scorePercent >= 75) return "Good";
@@ -574,18 +343,45 @@
     return "Needs Improvement";
   }
 
+  /* ---- Renders the chapter list as CARDS + adds counts, without changing behavior ---- */
   function renderChapterList() {
     const $list = $("#chapter-list");
     $list.empty();
-    $list.append(`<li data-chapter="all"><strong>All Chapters</strong></li>`);
+
+    const totalCount = Object.values(chapters).reduce((sum, arr) => sum + arr.length, 0);
+    $list.append(`
+      <li class="chapter-card" data-chapter="all">
+        <div class="chapter-card__name"><strong>All Chapters</strong></div>
+        <div class="chapter-card__count">${totalCount} questions</div>
+      </li>
+    `);
+
     Object.keys(chapters).forEach(chap => {
-      $list.append(`<li data-chapter="${chap}">${chap}</li>`);
+      const count = chapters[chap]?.length || 0;
+      $list.append(`
+        <li class="chapter-card" data-chapter="${chap}">
+          <div class="chapter-card__name">${chap}</div>
+          <div class="chapter-card__count">${count} questions</div>
+        </li>
+      `);
     });
+
+    // Keep the exact same click behavior
     $list.find("li").on("click", function () {
       selectedChapter = $(this).data("chapter");
       startQuiz(selectedChapter === "all" ? "all" : selectedChapter);
       $("#chapter-select").hide();
     });
+
+    // Search filter (purely visual)
+    $("#chapter-search").off("input").on("input", function () {
+      const q = $(this).val().toLowerCase();
+      $("#chapter-list li").each(function () {
+        const text = $(this).text().toLowerCase();
+        $(this).toggle(text.includes(q));
+      });
+    });
+
     $("#max-questions-select").prop("disabled", selectedChapter !== "");
     $("#timer-enable-slider").prop("disabled", selectedChapter !== "");
     $("#timer-duration-select").prop("disabled", selectedChapter !== "");
@@ -622,9 +418,7 @@
   function updateNavigationState() {
     if (timerEnabled) {
       $("#prev-btn").prop("disabled", true);
-      $("#nav-bar button").off("click").on("click", function (e) {
-        e.preventDefault();
-      });
+      $("#nav-bar button").off("click").on("click", function (e) { e.preventDefault(); });
       $("#pagination-controls button").prop("disabled", true);
     } else {
       $("#prev-btn").prop("disabled", currentIndex === 0);
@@ -635,9 +429,7 @@
         renderNavBarPage(currentPage);
         renderPaginationControls();
         renderQuestion(currentIndex);
-        if (timerEnabled) {
-          startTimer();
-        }
+        if (timerEnabled) { startTimer(); }
       });
       $("#pagination-controls button").prop("disabled", false);
     }
@@ -707,9 +499,7 @@
         if (timerEnabled) startTimer();
       }
     });
-    if (timerEnabled) {
-      $("#pagination-controls button").prop("disabled", true);
-    }
+    if (timerEnabled) { $("#pagination-controls button").prop("disabled", true); }
   }
 
   function renderQuestion(idx) {
@@ -726,19 +516,16 @@
     });
     optionsHtml += "</ul>";
     $("#question-page").html(`
-    <h2>Question ${idx + 1}</h2>
-    <div style="margin-bottom:1rem;font-size:1.07rem;">${q.Question}</div>
-    ${optionsHtml}
-    <div id="explanation" class="explanation" style="display:none;"></div>
+      <h2>Question ${idx + 1}</h2>
+      <div style="margin-bottom:1rem;font-size:1.07rem;">${q.Question}</div>
+      ${optionsHtml}
+      <div id="explanation" class="explanation" style="display:none;"></div>
     `);
     let numAnswered = answeredQuestions.filter(a => a).length;
     $("#progress-count").text(`Answered: ${numAnswered} / ${questions.length}`);
     $(".progress-inner").css("width", ((numAnswered / questions.length) * 100) + "%");
-    if (timerEnabled) {
-      $("#prev-btn").prop("disabled", true);
-    } else {
-      $("#prev-btn").prop("disabled", idx === 0);
-    }
+    if (timerEnabled) { $("#prev-btn").prop("disabled", true); }
+    else { $("#prev-btn").prop("disabled", idx === 0); }
     $("#next-btn").text(idx === questions.length - 1 ? "Show Results" : "Next Question");
     $("#next-btn").prop("disabled", !answeredQuestions[idx]);
     if (!answeredQuestions[idx]) {
@@ -779,17 +566,13 @@
     let numAnswered = answeredQuestions.filter(a => a).length;
     $(".progress-inner").css("width", ((numAnswered / questions.length) * 100) + "%");
     $("#progress-count").text(`Answered: ${numAnswered} / ${questions.length}`);
-    if (timerEnabled) {
-      stopTimer();
-    }
+    if (timerEnabled) { stopTimer(); }
   }
 
   function showAnswerHighlight(question, idx) {
     $(".options li").addClass("disabled");
     $(".options li").each(function () {
-      if ($(this).data("option") === question.Answer) {
-        $(this).addClass("correct");
-      }
+      if ($(this).data("option") === question.Answer) { $(this).addClass("correct"); }
     });
     $("#explanation").show().html("<strong>Explanation:</strong> " + question.Explanation);
   }
@@ -818,9 +601,7 @@
         renderPaginationControls();
       }
       renderQuestion(currentIndex);
-      if (timerEnabled) {
-        startTimer();
-      }
+      if (timerEnabled) { startTimer(); }
     } else {
       showFinalScore();
     }
@@ -858,19 +639,11 @@
       }
     }, 1000);
   }
-
   function stopTimer() {
-    if (timerInterval) {
-      clearInterval(timerInterval);
-      timerInterval = null;
-    }
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
     $("#timer-count").text(formatTime(0));
   }
-
-  function updateTimerDisplay() {
-    $("#timer-count").text(formatTime(timerRemaining));
-  }
-
+  function updateTimerDisplay() { $("#timer-count").text(formatTime(timerRemaining)); }
   function formatTime(seconds) {
     const m = Math.floor(seconds / 60);
     const s = seconds % 60;
@@ -906,10 +679,7 @@
         Unanswered Questions: ${unanswered}
       </div>
       <div style="margin-top:2.8rem;">
-        <button 
-        class="action-btn" style="background:#007bff;color:#fff;font-size:1.15rem;padding:0.7rem 2.2rem;border-radius:9px;cursor:pointer;font-weight:700;box-shadow:0 5px 16px rgba(0,123,255,0.13);border:none;"
-        onclick="location.reload()"
-        >Restart Quiz</button>
+        <button class="action-btn" style="background:#007bff;color:#fff;font-size:1.15rem;padding:0.7rem 2.2rem;border-radius:9px;cursor:pointer;font-weight:700;box-shadow:0 5px 16px rgba(0,123,255,0.13);border:none;" onclick="location.reload()">Restart Quiz</button>
       </div>
     `);
   }
@@ -964,7 +734,7 @@
       .fail(function (jqxhr, textStatus, error) {
         $("#chapter-select").html(`<div style="color:red;">Failed to load quiz data: ${textStatus} - ${error}</div>`);
       });
-  
+
     $("#timer-enable-slider").on("change", function () {
       if (selectedChapter !== "") {
         $(this).prop("checked", timerEnabled);
@@ -1001,9 +771,7 @@
       $("#settings-modal").css("display", "flex");
     });
 
-    $("#settings-cancel-btn").on("click", () => {
-      $("#settings-modal").hide();
-    });
+    $("#settings-cancel-btn").on("click", () => { $("#settings-modal").hide(); });
 
     $("#settings-save-btn").on("click", () => {
       let newMaxQ = parseInt($("#max-questions-select").val(), 10);
