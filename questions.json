@@ -1189,5 +1189,62 @@
       "Answer": "A",
       "Explanation": "AWS AppSync is the managed GraphQL service for migrating and hosting GraphQL APIs on AWS."
     }
+  ],
+  "Advanced IAM": [
+    {
+      "Q_No": "1",
+      "Question": "A company hired you to get some tasks done in their AWS Account. What is the best way to get access to their AWS Account?",
+      "A": "Ask them to create an IAM user for you",
+      "B": "Ask them to send you an AWS Access Key and Secret",
+      "C": "Use the STS service to assume an IAM Role in their AWS Account to gain temporary credentials",
+      "D": "",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "AWS STS lets you assume roles and get temporary cross-account credentials securely."
+    },
+    {
+      "Q_No": "2",
+      "Question": "You have an EC2 instance with a removed IAM role, and writes to S3 fail but reads still work. What is the most likely cause?",
+      "A": "The EC2 instance is using cached temporary IAM credentials",
+      "B": "The IAM credentials are cached in the EC2 instance...",
+      "C": "The S3 bucket policy authorizes reads",
+      "D": "When a read is done on a bucket, there's a grace period of 5 minutes...",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "S3 bucket policy can independently allow reads, so those operations can still work after the IAM role is removed."
+    },
+    {
+      "Q_No": "3",
+      "Question": "What does this IAM policy allow you to do? (Provides EC2 actions + PassRole: arn:aws:iam:::role/RDS-)",
+      "A": "It allows you to assign any IAM role to RDS instances",
+      "B": "It allows you to assign any IAM role to EC2 instances",
+      "C": "It allows you to assign RDS full access to EC2 instances",
+      "D": "It allows you to assign IAM Roles to EC2 if they start with RDS-*",
+      "E": "",
+      "Answer": "D",
+      "Explanation": "You can assign IAM Roles to EC2 if the role name starts with 'RDS-'."
+    },
+    {
+      "Q_No": "4",
+      "Question": "You want to provide each of 200 IAM users personal space in S3 under /home/<username>. How can you do this efficiently?",
+      "A": "Create an S3 bucket policy and change as users are added...",
+      "B": "Create one customer-managed policy with dynamic variables...",
+      "C": "Create inline policies for each IAM user as they onboarded",
+      "D": "Create one customer-managed policy per IAM user...",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "Use a single managed policy with dynamic username variables and attach to a group of all users for simpler management."
+    },
+    {
+      "Q_No": "5",
+      "Question": "You are running an on-premises Microsoft Active Directory. You need to create another AD in AWS and establish trust. Which AWS Directory service should you use?",
+      "A": "Managed Microsoft AD",
+      "B": "AD Connector",
+      "C": "Simple AD",
+      "D": "",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "Managed Microsoft AD enables trust relationships with on-premises Active Directory environments."
+    }
   ]
 }
