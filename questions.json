@@ -1121,5 +1121,73 @@
       "Answer": "B",
       "Explanation": "Cognito User Pools cannot integrate with Classic Load Balancers for authentication."
     }
+  ],
+  "Step Functions and AppSync": [
+    {
+      "Q_No": "1",
+      "Question": "You want to orchestrate a series of AWS Lambda functions into a workflow. Which AWS service should you use?",
+      "A": "AWS Simple Workflow Service",
+      "B": "AWS CodePipeline",
+      "C": "AWS Step Functions",
+      "D": "AWS OpsWorks",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "AWS Step Functions is a low-code visual workflow service used to coordinate AWS services and automate serverless applications."
+    },
+    {
+      "Q_No": "2",
+      "Question": "Your developers want a managed GraphQL backend for a mobile application. Which AWS service do you recommend?",
+      "A": "Amazon API Gateway",
+      "B": "AWS AppSync",
+      "C": "AWS Lambda",
+      "D": "Amazon ECS",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "AWS AppSync is a fully managed service to develop GraphQL APIs, handling secure data access and integration with other AWS services."
+    },
+    {
+      "Q_No": "3",
+      "Question": "You want to orchestrate multiple Lambda functions and wait for the result of all of them before making a final decision. What do you recommend?",
+      "A": "Step Functions Parallel States and then one final Task State",
+      "B": "Use AppSync Real-Time API",
+      "C": "Build the flow with EventBridge",
+      "D": "",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "Step Functions Parallel States allow multiple Lambda functions to execute concurrently, then continue with a final task state."
+    },
+    {
+      "Q_No": "4",
+      "Question": "You have a Step Functions workflow invoking Lambda functions. One state has an error with States.Permissions. How do you solve this problem?",
+      "A": "There's an execution failure in the Lambda function invoked by this Task State",
+      "B": "You need to give the Step Functions workflow the required IAM permissions to execute the Lambda function invoked by this Task State",
+      "C": "The Task State runs longer than the TimeoutSeconds value and it's failed",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "States.Permissions error indicates the Step Functions workflow lacks IAM permissions to execute the Lambda function."
+    },
+    {
+      "Q_No": "5",
+      "Question": "Which of the following AWS services does not support the WebSocket protocol?",
+      "A": "Application Load Balancer",
+      "B": "API Gateway",
+      "C": "AppSync",
+      "D": "DynamoDB",
+      "E": "",
+      "Answer": "D",
+      "Explanation": "DynamoDB does not support WebSocket protocol. ALB, API Gateway, and AppSync all support WebSocket connections."
+    },
+    {
+      "Q_No": "6",
+      "Question": "You have a GraphQL based API hosted on-premises that you want to migrate to AWS. Which AWS service should you choose?",
+      "A": "AppSync",
+      "B": "DynamoDB",
+      "C": "Lambda",
+      "D": "Application Load Balancer",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "AWS AppSync is the managed GraphQL service for migrating and hosting GraphQL APIs on AWS."
+    }
   ]
 }
