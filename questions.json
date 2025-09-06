@@ -1246,5 +1246,183 @@
       "Answer": "A",
       "Explanation": "Managed Microsoft AD enables trust relationships with on-premises Active Directory environments."
     }
+  ],
+  "Security and Encryption": [
+    {
+      "Q_No": "1",
+      "Question": "To enable In-flight Encryption (In-Transit Encryption), we need to have .....................",
+      "A": "an HTTP endpoint with an SSL certificate",
+      "B": "an HTTPS endpoint with an SSL certificate",
+      "C": "a TCP endpoint",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "In-flight Encryption = HTTPS, and HTTPS cannot be enabled without an SSL certificate."
+    },
+    {
+      "Q_No": "2",
+      "Question": "Server-Side Encryption means that the data is sent encrypted to the server.",
+      "A": "True",
+      "B": "False",
+      "C": "",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "Server-Side Encryption means the server will encrypt the data for us. We don’t need to encrypt it beforehand."
+    },
+    {
+      "Q_No": "3",
+      "Question": "In Server-Side Encryption, where do the encryption and decryption happen?",
+      "A": "Both Encryption and Decryption happen on the server",
+      "B": "Both Encryption and Decryption happen on the client",
+      "C": "Encryption happens on the server and Decryption happens on the client",
+      "D": "Encryption happens on the client and Decryption happens on the server",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "In Server-Side Encryption, the server handles both encryption and decryption, client never sees the key."
+    },
+    {
+      "Q_No": "4",
+      "Question": "In Client-Side Encryption, the server must know our encryption scheme before we can upload the data.",
+      "A": "True",
+      "B": "False",
+      "C": "",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "With Client-Side Encryption, the server does not need to know the scheme as it does not perform encryption or decryption operations."
+    },
+    {
+      "Q_No": "5",
+      "Question": "You need to create KMS Keys in AWS KMS before you are able to use the encryption features for EBS, S3, RDS ...",
+      "A": "True",
+      "B": "False",
+      "C": "",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "You can use AWS managed service keys in KMS; you don't always need to create your own KMS keys."
+    },
+    {
+      "Q_No": "6",
+      "Question": "AWS KMS supports both symmetric and asymmetric KMS keys.",
+      "A": "True",
+      "B": "False",
+      "C": "",
+      "D": "",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "KMS keys can be either symmetric or asymmetric (RSA/ECC key pairs or 256-bit symmetric)."
+    },
+    {
+      "Q_No": "7",
+      "Question": "You want to share an encrypted AMI (EBS snapshot using KMS CMK) with another AWS account. What must you do?",
+      "A": "The other AWS account needs to logout and login again",
+      "B": "You need to share the KMS CMK used to encrypt the AMI with the other AWS account",
+      "C": "You can't share an AMI that has an encrypted EBS snapshot",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "The KMS CMK used for encryption must also be shared with the other AWS account to allow access to the AMI."
+    },
+    {
+      "Q_No": "8",
+      "Question": "What should you use to control access to your KMS CMKs?",
+      "A": "KMS IAM Policy",
+      "B": "AWS GuardDuty",
+      "C": "KMS Key Policies",
+      "D": "KMS Access Control List (KMS ACL)",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "KMS Key Policies are the primary method for controlling access to KMS customer managed keys (CMKs)."
+    },
+    {
+      "Q_No": "9",
+      "Question": "You want to securely give your Lambda function access to the DB password. What is the most secure option?",
+      "A": "Embed it in the code",
+      "B": "Have it as a plaintext environment variable",
+      "C": "Have it as an encrypted environment variable and decrypt it at runtime",
+      "D": "",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "The most secure solution is to store it encrypted and decrypt it at runtime in the Lambda environment variable."
+    },
+    {
+      "Q_No": "10",
+      "Question": "You want to store and track secret value versions over time. Which AWS service should you use?",
+      "A": "SSM Parameter Store",
+      "B": "AWS KMS Versioning feature",
+      "C": "Amazon S3",
+      "D": "",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "SSM Parameter Store can store secrets and has built-in version tracking, storing all previous values of a parameter."
+    },
+    {
+      "Q_No": "11",
+      "Question": "Where to store configuration values for your main database to maintain control and version history?",
+      "A": "Amazon DynamoDB",
+      "B": "SSM Parameter Store",
+      "C": "Amazon S3",
+      "D": "Amazon EBS",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "SSM Parameter Store is the right choice for secure storage with versioning of configuration parameters."
+    },
+    {
+      "Q_No": "12",
+      "Question": "Most suitable AWS service for storing RDS DB passwords with automatic rotation?",
+      "A": "AWS Secrets Manager",
+      "B": "AWS SSM Parameter Store",
+      "C": "AWS KMS",
+      "D": "",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "AWS Secrets Manager is designed for secret storage, encryption, and supports automatic secret rotation (like for RDS passwords)."
+    },
+    {
+      "Q_No": "13",
+      "Question": "You would like to encrypt 400 KB of data. You should use .....................",
+      "A": "KMS Encrypt API",
+      "B": "KMS GenerateDataKey API call and encrypt client-side",
+      "C": "",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "Use Envelope Encryption (KMS GenerateDataKey) for >4 KB of data; KMS Encrypt API has a 4KB limit."
+    },
+    {
+      "Q_No": "14",
+      "Question": "S3 bucket with SSE:KMS, EC2 app with S3:GetObject permission gets denied on download. What is a possible cause?",
+      "A": "Add an S3 bucket policy",
+      "B": "Add permission for KMS:Decrypt",
+      "C": "Add permission for KMS:Encrypt",
+      "D": "Add permission for S3:Decrypt",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "For SSE:KMS, you must grant KMS:Decrypt to the instance so it can decrypt data from the bucket."
+    },
+    {
+      "Q_No": "15",
+      "Question": "How to encrypt an existing CloudWatch Log Group with a KMS key?",
+      "A": "You can enable encryption from the Console",
+      "B": "Encrypt with create-log-group API call",
+      "C": "Encrypt with update-log-group API call",
+      "D": "Encrypt with associate-kms-key API call",
+      "E": "",
+      "Answer": "D",
+      "Explanation": "Use the associate-kms-key API call to add encryption to an existing CloudWatch Log Group."
+    },
+    {
+      "Q_No": "16",
+      "Question": "Which IAM policy condition allows you to enforce SSL requests to S3 buckets?",
+      "A": "aws:SecureTransport",
+      "B": "aws:EnforceSSL",
+      "C": "s3:SecureTransport",
+      "D": "s3:EnforceSSL",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "The aws:SecureTransport condition enforces SSL (HTTPS) for accessing objects in S3 buckets."
+    }
   ]
 }
