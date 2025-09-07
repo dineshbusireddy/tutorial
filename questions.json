@@ -111,7 +111,7 @@
       "Explanation": "AWS is responsible for protecting the infrastructure that runs all of the services offered in the AWS Cloud. This includes the hardware, software, networking, and facilities that support AWS Cloud services. Customers are responsible for managing their own data, applications, and configurations within AWS"
     }
   ],
-  "Monitoring Quiz": [
+  "Monitoring": [
     {
       "Q_No": "1",
       "Question": "You have a couple of EC2 instances in which you would like their Standard CloudWatch Metrics to be collected every 1 minute. What should you do?",
@@ -1850,3 +1850,4 @@
     }
   ]
 }
+
