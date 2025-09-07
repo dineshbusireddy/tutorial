@@ -1424,5 +1424,51 @@
       "Answer": "A",
       "Explanation": "The aws:SecureTransport condition enforces SSL (HTTPS) for accessing objects in S3 buckets."
     }
+  ],
+  "Other Services": [
+    {
+      "Q_No": "1",
+      "Question": "Which AWS service allows you to send a large number of emails using AWS SDK?",
+      "A": "Simple Queue Service (SQS)",
+      "B": "Simple Notification Service (SNS)",
+      "C": "Kinesis Data Streams",
+      "D": "Simple Email Service (SES)",
+      "E": "",
+      "Answer": "D",
+      "Explanation": "Simple Email Service (SES) is designed for sending high volumes of email via SDK or SMTP."
+    },
+    {
+      "Q_No": "2",
+      "Question": "Which AWS service should you use to centrally manage SSL certificates for ALB and CloudFront?",
+      "A": "Amazon S3",
+      "B": "AWS Certificate Manager (ACM)",
+      "C": "Key Management Service (KMS)",
+      "D": "Identity and Access Management (IAM)",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "AWS Certificate Manager (ACM) manages, provisions, and deploys SSL/TLS certificates at scale for AWS services."
+    },
+    {
+      "Q_No": "3",
+      "Question": "Which AWS service helps protect sensitive data in S3 buckets?",
+      "A": "Relational Database Service (RDS)",
+      "B": "Amazon Shield",
+      "C": "Amazon Macie",
+      "D": "AWS KMS",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "Amazon Macie is a security service that uses ML to automatically discover and protect sensitive data in S3."
+    },
+    {
+      "Q_No": "4",
+      "Question": "Which AWS technology do you recommend to implement a search feature with partial matches for DynamoDB data?",
+      "A": "Amazon DynamoDB",
+      "B": "Amazon OpenSearch Service",
+      "C": "Amazon ECS",
+      "D": "Amazon S3",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "Amazon OpenSearch Service provides full-text search and analytics with support for partial and fuzzy matching, complementing DynamoDB."
+    }
   ]
 }
