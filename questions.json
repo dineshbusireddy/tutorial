@@ -111,6 +111,272 @@
       "Explanation": "AWS is responsible for protecting the infrastructure that runs all of the services offered in the AWS Cloud. This includes the hardware, software, networking, and facilities that support AWS Cloud services. Customers are responsible for managing their own data, applications, and configurations within AWS"
     }
   ],
+  "Monitoring Quiz": [
+    {
+      "Q_No": "1",
+      "Question": "You have a couple of EC2 instances in which you would like their Standard CloudWatch Metrics to be collected every 1 minute. What should you do?",
+      "A": "Enable CloudWatch Custom Metrics",
+      "B": "Enable High Resolution",
+      "C": "Enable Basic Monitoring",
+      "D": "Enable Detailed Monitoring",
+      "E": "",
+      "Answer": "D",
+      "Explanation": "This is a paid offering and is disabled by default. When enabled, the EC2 instance's metrics are available in 1-minute periods."
+    },
+    {
+      "Q_No": "2",
+      "Question": "High-Resolution Custom Metrics can have a minimum resolution of ..........................",
+      "A": "10 seconds",
+      "B": "1 second",
+      "C": "30 seconds",
+      "D": "1 minute",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "\"1 second\" is the minimum resolution for High-Resolution Metrics in CloudWatch."
+    },
+    {
+      "Q_No": "3",
+      "Question": "You have an RDS DB instance that's configured to push database logs to CloudWatch. You want to create a CloudWatch alarm if there's an \"Error\" found in the logs. How?",
+      "A": "Create a CloudWatch Logs Metric Filter for the keyword \"Error\", then create a CloudWatch Alarm on that Metric Filter",
+      "B": "Create a scheduled CloudWatch Event that triggers AWS Lambda every 1 hour, scans logs, and notify via SNS",
+      "C": "Create AWS Config Rule monitoring \"Error\" in logs and notify via SNS",
+      "D": "",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "Use a Metric Filter looking for \"Error\", then create an alarm on it."
+    },
+    {
+      "Q_No": "4",
+      "Question": "You have an app hosted on EC2 instances managed by Auto Scaling Group with min capacity 2 and CloudWatch Alarm in ALARM state. What's the effect?",
+      "A": "One EC2 instance will terminate, ASG capacity goes to 1",
+      "B": "Alarm detached from ASG",
+      "C": "Alarm remains ALARM but won't reduce EC2 below min capacity",
+      "D": "Alarm goes OK",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "ASG capacity won't go below min; alarm stays ALARM."
+    },
+    {
+      "Q_No": "5",
+      "Question": "How to monitor memory usage in EC2 with CloudWatch?",
+      "A": "Enable EC2 Detailed Monitoring",
+      "B": "EC2 pushes memory usage by default",
+      "C": "Use Unified CloudWatch Agent to push custom metric",
+      "D": "",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "Unified CloudWatch Agent needed as default does not push memory."
+    },
+    {
+      "Q_No": "6",
+      "Question": "CloudWatch Alarm on a High-Resolution Metric triggers as often as?",
+      "A": "1 second",
+      "B": "10 seconds",
+      "C": "30 seconds",
+      "D": "1 minute",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "Can specify alarms as frequent as 10 or 30 seconds."
+    },
+    {
+      "Q_No": "7",
+      "Question": "You want to evaluate impact of a configuration change. Which AWS service?",
+      "A": "Amazon CloudWatch",
+      "B": "AWS CloudTrail",
+      "C": "",
+      "D": "",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "CloudWatch allows monitoring and analyzing application performance."
+    },
+    {
+      "Q_No": "8",
+      "Question": "Someone terminated an EC2 instance with sensitive data. Which service helps identify who and when?",
+      "A": "CloudWatch Metrics",
+      "B": "CloudWatch Alarms",
+      "C": "CloudWatch Events",
+      "D": "AWS CloudTrail",
+      "E": "",
+      "Answer": "D",
+      "Explanation": "CloudTrail logs and shows activity including termination events."
+    },
+    {
+      "Q_No": "9",
+      "Question": "CloudTrail enabled across all Regions to detect unusual activity. Which to use?",
+      "A": "CloudTrail Data Events",
+      "B": "CloudTrail Insights",
+      "C": "CloudTrail Management Events",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "CloudTrail Insights detects unusual activity."
+    },
+    {
+      "Q_No": "10",
+      "Question": "Teammate terminated EC2 4 months ago, you need to review API calls. What to do?",
+      "A": "Use CloudTrail Event History in Console",
+      "B": "Analyze CloudTrail logs in S3 with Athena",
+      "C": "",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "Use Athena to analyze older CloudTrail logs in S3."
+    },
+    {
+      "Q_No": "11",
+      "Question": "Resource config changed and non-compliant. Which service to find who made change?",
+      "A": "Amazon CloudWatch",
+      "B": "AWS CloudTrail",
+      "C": "AWS Config",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "CloudTrail tracks who made changes."
+    },
+    {
+      "Q_No": "12",
+      "Question": "How to test CloudWatch Alarm responding to traffic increase in cost-effective way?",
+      "A": "Setup global EC2 fleet to raise requests",
+      "B": "Change alarm thresholds temporarily",
+      "C": "Use set-alarm-state CLI command",
+      "D": "",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "Use CLI set-alarm-state to simulate alarm."
+    },
+    {
+      "Q_No": "13",
+      "Question": "How to push custom metric data to CloudWatch API?",
+      "A": "SendMetricData",
+      "B": "PutCustomMetric",
+      "C": "PutMetricData",
+      "D": "SendCustomMetric",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "PutMetricData is used to push custom metrics."
+    },
+    {
+      "Q_No": "14",
+      "Question": "CloudWatch Logs auto-expire after 7 days by default?",
+      "A": "False",
+      "B": "True",
+      "C": "",
+      "D": "",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "By default, logs never expire."
+    },
+    {
+      "Q_No": "15",
+      "Question": "Log Retention Policy in CloudWatch Logs defined at which level?",
+      "A": "Log Streams",
+      "B": "Log Groups",
+      "C": "",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "Policy is set at Log Groups level."
+    },
+    {
+      "Q_No": "16",
+      "Question": "X-Ray traces missing after Elastic Beanstalk deploy, cause?",
+      "A": "Config file .ebextensions/xray-daemon.config missing",
+      "B": "Need IAM permission from X-Ray Console",
+      "C": "Code misconfigured",
+      "D": "",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "Daemon config file required for Beanstalk."
+    },
+    {
+      "Q_No": "17",
+      "Question": "X-Ray traces missing after EC2 deploy via CodeDeploy, cause?",
+      "A": "appspec.yml breaks X-Ray integration",
+      "B": "X-Ray daemon not running",
+      "C": "Integration needs enabling in CodeDeploy",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "Daemon must run for X-Ray to function."
+    },
+    {
+      "Q_No": "18",
+      "Question": "Traces missing despite X-Ray daemon running on EC2 via CodeDeploy, cause?",
+      "A": "IAM role missing permission to send data",
+      "B": "Inbound UDP not enabled",
+      "C": "EC2 in Auto Scaling Group required",
+      "D": "",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "IAM role must have sending permission."
+    },
+    {
+      "Q_No": "19",
+      "Question": "CodePipeline fails finding Elastic Beanstalk environment, next step?",
+      "A": "Check CloudFormation stacks",
+      "B": "Check CodePipeline changes",
+      "C": "Check CloudTrail Delete event",
+      "D": "",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "Use CloudTrail logs to find deletions."
+    },
+    {
+      "Q_No": "20",
+      "Question": "Configure X-Ray daemon to send traces from multiple accounts to central account?",
+      "A": "Create IAM user, generate load keys to other accounts",
+      "B": "Create IAM role in central account, then roles in other accounts to assume it",
+      "C": "",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "Best practice to use IAM roles."
+    },
+    {
+      "Q_No": "21",
+      "Question": "Add info to X-Ray traces enabling efficient search and filter?",
+      "A": "Segments",
+      "B": "Sampling",
+      "C": "Annotations",
+      "D": "Metadata",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "Annotations allow custom key-value info for filtering."
+    },
+    {
+      "Q_No": "22",
+      "Question": "AWS service for cross-account tracing and visualization?",
+      "A": "VPC Flow Logs",
+      "B": "AWS X-Ray",
+      "C": "CloudWatch Logs",
+      "D": "CloudTrail",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "AWS X-Ray supports cross-account tracing."
+    },
+    {
+      "Q_No": "23",
+      "Question": "APIs for writing to X-Ray, EXCEPT?",
+      "A": "BatchGetTraces",
+      "B": "PutTraceSegments",
+      "C": "PutTelemetryRecords",
+      "D": "",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "BatchGetTraces is read-only API."
+    },
+    {
+      "Q_No": "24",
+      "Question": "X-Ray SDK records first request ..., and ... of additional requests?",
+      "A": "each minute, 5%",
+      "B": "every 2 seconds, 10%",
+      "C": "each second, 10%",
+      "D": "each second, 5%",
+      "E": "",
+      "Answer": "D",
+      "Explanation": "Records first request each second, and 5% of subsequent."
+    }
+  ],
   "Lambda": [
     {
       "Q_No": 1,
