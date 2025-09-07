@@ -1,4 +1,116 @@
 {
+  "IAM": [
+    {
+      "Q_No": "1",
+      "Question": "What is a proper definition of an IAM Role?",
+      "A": "IAM Users in multiple User Groups",
+      "B": "An IAM entity that defines a set of permissions for making requests to AWS services, and will be used by an AWS service",
+      "C": "An IAM entity that defines a password policy for IAM Users",
+      "D": "Permissions assigned to IAM Users to perform actions",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "Some AWS services need to perform actions on your behalf. To do so, you assign permissions to AWS services with IAM Roles."
+    },
+    {
+      "Q_No": "2",
+      "Question": "Which of the following is an IAM Security Tool?",
+      "A": "IAM Credentials Report",
+      "B": "IAM Root Account Manager",
+      "C": "IAM Services Report",
+      "D": "IAM Security Advisor",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "IAM Credentials report lists all your AWS Account's IAM Users and the status of their various credentials."
+    },
+    {
+      "Q_No": "3",
+      "Question": "Which answer is INCORRECT regarding IAM Users?",
+      "A": "IAM Users can belong to multiple User Groups",
+      "B": "IAM Users don't have to belong to a User Group",
+      "C": "IAM Policies can be attached directly to IAM Users",
+      "D": "IAM Users access AWS services using root account credentials",
+      "E": "",
+      "Answer": "D",
+      "Explanation": "IAM Users access AWS services using their own credentials (username & password or Access Keys)."
+    },
+    {
+      "Q_No": "4",
+      "Question": "Which of the following is an IAM best practice?",
+      "A": "Create several IAM Users for one physical person",
+      "B": "Share your AWS account credentials with your colleague, so he can perform a task for you",
+      "C": "Don't use the root user account",
+      "D": "Do not enable MFA for easier access",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "Use the root account only to create your first IAM User and a few account/service management tasks. For everyday tasks, use IAM User."
+    },
+    {
+      "Q_No": "5",
+      "Question": "What are IAM Policies?",
+      "A": "A set of policies defines how AWS accounts interact with each other",
+      "B": "JSON documents that define a set of permissions for making requests to AWS services, and can be used by IAM Users, User Groups, and IAM Roles",
+      "C": "A set of policies that define a password for IAM Users",
+      "D": "A set of policies defined by AWS that show how customers interact with AWS",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "JSON documents that define a set of permissions for making requests to AWS services and can be used by IAM Users, Groups, and Roles."
+    },
+    {
+      "Q_No": "6",
+      "Question": "Which principle should you apply regarding IAM Permissions?",
+      "A": "Grant least privilege",
+      "B": "Grant most privilege",
+      "C": "Grant more permissions if your employee asks you to",
+      "D": "Restrict root account permissions",
+      "E": "",
+      "Answer": "A",
+      "Explanation": "Don't give more permissions than the user needs."
+    },
+    {
+      "Q_No": "7",
+      "Question": "What should you do to increase your root account security?",
+      "A": "Remove permissions from the root account",
+      "B": "Only access AWS services through AWS Command Line Interface (CLI)",
+      "C": "Enable Multi-Factor Authentication (MFA)",
+      "D": "Don't create IAM Users, only access your AWS account using the root account",
+      "E": "",
+      "Answer": "C",
+      "Explanation": "When you enable MFA, this adds another security layer. Even if your password is stolen or lost, your account is not compromised."
+    },
+    {
+      "Q_No": "8",
+      "Question": "IAM User Groups can contain IAM Users and other User Groups.",
+      "A": "True",
+      "B": "False",
+      "C": "",
+      "D": "",
+      "E": "",
+      "Answer": "B",
+      "Explanation": "IAM User Groups can contain only IAM Users."
+    },
+    {
+      "Q_No": "9",
+      "Question": "An IAM policy consists of one or more statements. A statement in an IAM Policy consists of the following, EXCEPT:",
+      "A": "Effect",
+      "B": "Principal",
+      "C": "Version",
+      "D": "Action",
+      "E": "Resource",
+      "Answer": "C",
+      "Explanation": "A statement in an IAM Policy consists of Sid, Effect, Principal, Action, Resource, and Condition. “Version” is part of the policy itself, not the statement."
+    },
+    {
+      "Q_No": "10",
+      "Question": "According to the AWS Shared Responsibility Model, which of the following is AWS responsibility?",
+      "A": "Rotate Access Key for IAM Users",
+      "B": "Enable MFA for the root account and all IAM Users",
+      "C": "IAM Users, User Groups, and IAM Policies",
+      "D": "AWS Infrastructure",
+      "E": "",
+      "Answer": "D",
+      "Explanation": "AWS is responsible for protecting the infrastructure that runs all of the services offered in the AWS Cloud. This includes the hardware, software, networking, and facilities that support AWS Cloud services. Customers are responsible for managing their own data, applications, and configurations within AWS"
+    }
+  ],
   "Lambda": [
     {
       "Q_No": 1,
